@@ -181,7 +181,7 @@ export default function App() {
       </main>
 
       <footer className="border-t border-studio-border/50 py-6 text-center text-xs text-studio-muted">
-        AI Narodni Kompozitor · Magenta + Tone.js + Gemini · v2.0.0 Zero-Cost
+        AI Narodni Kompozitor · Magenta + Tone.js + Gemini · v2.0.1 Zero-Cost
       </footer>
     </div>
   )
