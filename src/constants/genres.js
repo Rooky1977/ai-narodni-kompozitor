@@ -4,11 +4,15 @@ export const ZANROVI = [
   'Narodna / Folk',
   'Narodni melos',
   'Tamburaški',
+  'Sevdalinka',
   'Sevdah',
   'Krajiška',
+  'Južni Vetar (80-te)',
+  'Šumadijski stil',
   'Izvorna',
   'Starogradska',
   'Kafanska',
+  'Moderan Pop-Folk',
   'Pop-Folk',
   'Zabavna',
   'Turbo-folk',
@@ -46,6 +50,30 @@ const ZANR_SUNO_STYLES = {
       'sevdah, sevdalinka, bosnian sevdah, melancholic, emotional, slow tempo, ornamental vocal',
     intro: 'soft sevdah instrumental intro, accordion and soft strings',
     defaultInstruments: 'harmonika, violina, gitara',
+  },
+  Sevdalinka: {
+    style:
+      'sevdalinka, classic bosnian sevdah, poetic, melismatic vocal, intimate chamber folk',
+    intro: 'quiet sevdalinka intro, soft accordion drone then vocal',
+    defaultInstruments: 'harmonika, violina',
+  },
+  'Južni Vetar (80-te)': {
+    style:
+      'juzni vetar, 1980s yugoslav folk-pop, southern wind style, synth folk, nostalgic Balkan',
+    intro: '80s Juzni Vetar synth-folk intro, then vocals',
+    defaultInstruments: 'klavijatura, harmonika, bas, bubnjevi',
+  },
+  'Šumadijski stil': {
+    style:
+      'sumadijski, Serbian sumadija folk, lively acoustic folk, traditional dance song',
+    intro: 'sumadija folk instrumental intro with accordion',
+    defaultInstruments: 'harmonika, violina, bas',
+  },
+  'Moderan Pop-Folk': {
+    style:
+      'modern pop-folk, contemporary Balkan pop folk, radio hit, polished chorus',
+    intro: 'modern pop-folk beat intro then vocals',
+    defaultInstruments: 'klavijatura, bas, bubnjevi, harmonika',
   },
   Krajiška: {
     style:

@@ -1,7 +1,7 @@
 {
   "name": "ai-narodni-kompozitor",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
+    "@magenta/music": "^1.23.1",
     "firebase": "^11.1.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tone": "^15.1.22",
+    "wavesurfer.js": "^7.12.11"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

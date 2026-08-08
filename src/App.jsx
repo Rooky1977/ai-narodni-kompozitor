@@ -3,8 +3,10 @@ import Header from './components/Header'
 import SongForm from './components/SongForm'
 import LyricsEditor from './components/LyricsEditor'
 import MusicGenerator from './components/MusicGenerator'
+import ProStudioPanel from './components/ProStudioPanel'
 import AudioPlayer from './components/AudioPlayer'
 import SongLibrary from './components/SongLibrary'
+import WaveformPlayer from './components/WaveformPlayer'
 import { generateLyrics, extractTitle } from './services/gemini'
 import { saveSong, loadSongs } from './services/songs'
 import { isFirebaseConfigured } from './firebase'
@@ -14,6 +16,8 @@ const INITIAL_FORM = {
   zanr: 'Narodna / Folk',
   vokal: 'Muški vokal',
   instrumenti: 'harmonika, violina',
+  metrika: 'deseterac',
+  rima: 'AABB',
 }
 
 export default function App() {
@@ -109,7 +113,10 @@ export default function App() {
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
         {currentAudio?.audioUrl && (
-          <AudioPlayer src={currentAudio.audioUrl} title={currentAudio.naslov} />
+          <div className="space-y-3">
+            <AudioPlayer src={currentAudio.audioUrl} title={currentAudio.naslov} />
+            <WaveformPlayer url={currentAudio.audioUrl} />
+          </div>
         )}
 
         {saveMessage && (
@@ -139,6 +146,17 @@ export default function App() {
               disabled={lyricsLoading}
             />
 
+            <ProStudioPanel
+              zanr={form.zanr}
+              vokal={form.vokal}
+              instrumenti={form.instrumenti}
+              naslov={naslov}
+              tekst={tekst}
+              metrika={form.metrika}
+              rima={form.rima}
+              onMusicReady={handleMusicReady}
+            />
+
             <MusicGenerator
               tekst={tekst}
               naslov={naslov}
@@ -163,7 +181,7 @@ export default function App() {
       </main>
 
       <footer className="border-t border-studio-border/50 py-6 text-center text-xs text-studio-muted">
-        AI Narodni Kompozitor · Gemini tekst + Suno muzika · v1.2.0
+        AI Narodni Kompozitor · Magenta + Tone.js + Gemini · v2.0.0 Zero-Cost
       </footer>
     </div>
   )

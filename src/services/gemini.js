@@ -1,3 +1,5 @@
+import { metrikaHint } from '../constants/metrics'
+
 const MODEL_CANDIDATES = [
   'gemini-2.5-flash',
   'gemini-flash-latest',
@@ -5,40 +7,44 @@ const MODEL_CANDIDATES = [
   'gemini-2.0-flash-lite',
 ]
 
-function buildPrompt({ tema, zanr, vokal, instrumenti }) {
-  return `Ti si majstor narodnog pjesništva Balkana. Napiši kompletan tekst pjesme na bosanskom/hrvatskom/srpskom jeziku (ijekavica ili ekavica — biraj prirodno).
+function buildPrompt({ tema, zanr, vokal, instrumenti, metrika, rima }) {
+  const meter = metrikaHint(metrika || 'deseterac')
+  return `Ti si majstor narodnog pjesništva Balkana i ritmičke strukture stiha. Napiši kompletan tekst pjesme na bosanskom/hrvatskom/srpskom jeziku.
 
 Tema: ${tema}
 Žanr / melos: ${zanr}
 Vokal: ${vokal}
-Instrumenti (atmosfera): ${instrumenti || 'harmonika, violina'}
+Instrumenti: ${instrumenti || 'harmonika, violina'}
+Metrika: ${meter}
+Shema rime: ${rima || 'AABB'} (poštuj strogo unutar svake četvorke stihova)
 
-STROGO poštuj ovaj format (naslovi sekcija tačno ovako — koriste se samo za uređivanje u aplikaciji):
+STROGO format:
 
 [Intro]
-(2–4 kratka stiha ili atmosfera)
+(2–4 stiha)
 
 [Strofa 1]
 (4–6 stihova)
 
 [Refren]
-(4 stiha — pamtljiv, pogodan za pjevanje)
+(4 stiha)
 
 [Strofa 2]
 (4–6 stihova)
 
 [Refren]
-(isti refren kao gore)
+(isti refren)
 
 [Outro]
-(2–4 stiha koji zatvaraju pjesmu)
+(2–4 stiha)
 
 Pravila:
-- Rimuj prirodno, bez modernog slenga.
-- Ton, rječnik i ritam stiha strogo odgovaraju žanru (${zanr}).
-- Ako je žanr Tamburaški / Narodni melos / Izvorna — piši izvorno, narodski, bez pop fraza.
-- Ne dodaj komentare, objašnjenja ni markdown — samo tekst pjesme.
-- Naslov pjesme stavi u prvi red kao: Naslov: ...`
+- Broj slogova u svakom stihu po metrići (${metrika || 'deseterac'}).
+- Rimovanje: ${rima || 'AABB'}.
+- Ton i rječnik = žanr (${zanr}).
+- Sevdalinka/Krajiška/Južni Vetar/Šumadijski — autentičan vokabular epohe/stila.
+- Bez komentara i markdowna.
+- Prvi red: Naslov: ...`
 }
 
 async function generateWithRest(apiKey, modelName, prompt) {
@@ -58,9 +64,7 @@ async function generateWithRest(apiKey, modelName, prompt) {
   const data = await res.json().catch(() => ({}))
 
   if (!res.ok) {
-    const msg =
-      data?.error?.message ||
-      `Gemini greška ${res.status} na modelu ${modelName}`
+    const msg = data?.error?.message || `Gemini greška ${res.status} na modelu ${modelName}`
     const err = new Error(msg)
     err.status = res.status
     err.model = modelName
@@ -74,9 +78,6 @@ async function generateWithRest(apiKey, modelName, prompt) {
   return text.trim()
 }
 
-/**
- * Generiše strukturiran tekst pjesme preko Google Gemini Free Tier (REST).
- */
 export async function generateLyrics(params) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
   if (!apiKey || apiKey === 'your_gemini_api_key') {
@@ -101,7 +102,6 @@ export async function generateLyrics(params) {
   )
 }
 
-/** Izvuci naslov iz Gemini odgovora ako postoji. */
 export function extractTitle(lyrics, fallbackTema) {
   const match = lyrics.match(/^Naslov:\s*(.+)$/im)
   if (match?.[1]) return match[1].trim().slice(0, 80)

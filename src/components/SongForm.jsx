@@ -1,4 +1,5 @@
 import { ZANROVI, VOKALI, getZanrProfile } from '../constants/genres'
+import { METRIKE, RIME } from '../constants/metrics'
 
 export default function SongForm({ values, onChange, onSubmit, loading, disabled }) {
   const update = (field) => (e) => {
@@ -26,7 +27,7 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
       <div>
         <h2 className="font-display text-2xl text-studio-text">Stvaralac</h2>
         <p className="mt-1 text-sm text-studio-muted">
-          Unesi temu i želje — AI piše stihove, Suno dobija čist tekst + stil žanra.
+          Tema, žanr, metrika stiha i rima — zatim Pro Studio za besplatni aranžman.
         </p>
       </div>
 
@@ -63,9 +64,6 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
               </option>
             ))}
           </select>
-          <p className="mt-1.5 text-xs text-studio-muted">
-            npr. Narodni melos / Tamburaški → Suno automatski dobija taj stil i intro.
-          </p>
         </div>
 
         <div>
@@ -82,6 +80,45 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
             {VOKALI.map((v) => (
               <option key={v} value={v}>
                 {v}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className="studio-label" htmlFor="metrika">
+            Metrička struktura
+          </label>
+          <select
+            id="metrika"
+            className="studio-input"
+            value={values.metrika}
+            onChange={update('metrika')}
+            disabled={disabled}
+          >
+            {METRIKE.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name} — {m.tip}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="studio-label" htmlFor="rima">
+            Shema rime
+          </label>
+          <select
+            id="rima"
+            className="studio-input"
+            value={values.rima}
+            onChange={update('rima')}
+            disabled={disabled}
+          >
+            {RIME.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.name}
               </option>
             ))}
           </select>
