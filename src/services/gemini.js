@@ -1,6 +1,11 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const MODEL_CANDIDATES = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest']
+const MODEL_CANDIDATES = [
+  'gemini-2.5-flash',
+  'gemini-flash-latest',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+]
 
 function buildPrompt({ tema, zanr, vokal, instrumenti }) {
   return `Ti si majstor narodnog pjesništva Balkana. Napiši kompletan tekst pjesme na bosanskom/hrvatskom/srpskom jeziku (ijekavica ili ekavica — biraj prirodno).
