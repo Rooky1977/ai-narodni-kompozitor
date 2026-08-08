@@ -1,8 +1,19 @@
-const ZANROVI = ['Narodna / Folk', 'Zabavna', 'Sevdah', 'Pop-Folk', 'Krajiška']
-const VOKALI = ['Muški vokal', 'Ženski vokal']
+import { ZANROVI, VOKALI, getZanrProfile } from '../constants/genres'
 
 export default function SongForm({ values, onChange, onSubmit, loading, disabled }) {
-  const update = (field) => (e) => onChange({ ...values, [field]: e.target.value })
+  const update = (field) => (e) => {
+    const value = e.target.value
+    if (field === 'zanr') {
+      const profile = getZanrProfile(value)
+      onChange({
+        ...values,
+        zanr: value,
+        instrumenti: profile.defaultInstruments,
+      })
+      return
+    }
+    onChange({ ...values, [field]: value })
+  }
 
   return (
     <form
@@ -15,7 +26,7 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
       <div>
         <h2 className="font-display text-2xl text-studio-text">Stvaralac</h2>
         <p className="mt-1 text-sm text-studio-muted">
-          Unesi temu i želje — AI piše stihove u narodnom duhu.
+          Unesi temu i želje — AI piše stihove, Suno dobija čist tekst + stil žanra.
         </p>
       </div>
 
@@ -37,7 +48,7 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="studio-label" htmlFor="zanr">
-            Žanr
+            Žanr / melos
           </label>
           <select
             id="zanr"
@@ -52,6 +63,9 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
               </option>
             ))}
           </select>
+          <p className="mt-1.5 text-xs text-studio-muted">
+            npr. Narodni melos / Tamburaški → Suno automatski dobija taj stil i intro.
+          </p>
         </div>
 
         <div>
@@ -81,7 +95,7 @@ export default function SongForm({ values, onChange, onSubmit, loading, disabled
         <input
           id="instrumenti"
           className="studio-input"
-          placeholder='npr. "harmonika, violina, klavijatura"'
+          placeholder='npr. "harmonika, violina, tambura"'
           value={values.instrumenti}
           onChange={update('instrumenti')}
           disabled={disabled}

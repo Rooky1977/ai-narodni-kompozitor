@@ -107,8 +107,8 @@ export default function MusicGenerator({
         </p>
 
         <ol className="mt-4 list-decimal space-y-1 pl-5 text-sm text-studio-muted">
-          <li>Kopiraj stil + tekst (ili klikni „Otvori Suno“).</li>
-          <li>Na Suno uključi Custom Mode, zalijepi Lyrics + Style.</li>
+          <li>Kopiraj stil + čist tekst (bez [Intro]/[Refren] oznaka).</li>
+          <li>Na Suno uključi Custom Mode — Style već sadrži melos/intro žanra.</li>
           <li>Kad pjesma bude gotova, zalijepi MP3 / audio URL ovdje.</li>
         </ol>
 
@@ -157,7 +157,8 @@ export default function MusicGenerator({
         <div className="studio-panel animate-fade-in space-y-4 p-6">
           <h3 className="font-display text-lg text-studio-gold">Ubaci gotov Suno audio</h3>
           <p className="text-sm text-studio-muted">
-            Na Suno-u otvori pjesmu → Share / Download → zalijepi direktan audio link.
+            Ispod je Style (automatski za izabrani žanr) + Lyrics bez oznaka sekcija.
+            Na Suno-u: Custom Mode → zalijepi Style i Lyrics → Share/Download → audio URL ovdje.
           </p>
           <textarea
             className="studio-input min-h-[120px] resize-y font-mono text-xs leading-relaxed text-studio-muted"

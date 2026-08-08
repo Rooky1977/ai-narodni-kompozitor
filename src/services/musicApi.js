@@ -8,45 +8,62 @@
  * 4) Fallback: korisnik na Suno webu napravi pjesmu i zalijepi MP3 URL
  */
 
+import { getZanrProfile, stripSectionLabels } from '../constants/genres'
+
 const DEMO_AUDIO =
   'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
 
 export function buildStyleTags({ zanr, vokal, instrumenti }) {
+  const profile = getZanrProfile(zanr)
+  const vocalTag =
+    vokal === 'Ženski vokal'
+      ? 'female vocal'
+      : vokal === 'Duett / mješoviti'
+        ? 'duet vocals'
+        : 'male vocal'
+
   return [
-    zanr,
-    vokal,
-    instrumenti || 'harmonika',
-    'balkan folk',
-    'authentic',
-    'emotional',
+    profile.style,
+    profile.intro,
+    vocalTag,
+    instrumenti || profile.defaultInstruments,
   ]
     .filter(Boolean)
     .join(', ')
 }
 
 export function buildMusicPrompt({ tekst, zanr, vokal, instrumenti }) {
+  const clean = stripSectionLabels(tekst)
+  const style = buildStyleTags({ zanr, vokal, instrumenti })
   return [
+    `Style: ${style}`,
     `Žanr: ${zanr}`,
     `Vokal: ${vokal}`,
-    `Instrumenti: ${instrumenti || 'harmonika'}`,
-    'Stil: balkanska narodna atmosfera, topli tonovi, živ ritam.',
+    `Instrumenti: ${instrumenti || getZanrProfile(zanr).defaultInstruments}`,
     '',
-    'Tekst pjesme:',
-    tekst,
+    'Lyrics:',
+    clean,
   ].join('\n')
 }
 
-/** Prompt spreman za paste u Suno Custom Mode. */
+/**
+ * Prompt za Suno Custom Mode:
+ * - Style = žanr + intro (narodni melos / tamburaški…)
+ * - Lyrics = čist tekst BEZ [Intro]/[Refren]/[Strofa]
+ */
 export function buildSunoClipboard({ tekst, naslov, zanr, vokal, instrumenti }) {
   const style = buildStyleTags({ zanr, vokal, instrumenti })
+  const cleanLyrics = stripSectionLabels(tekst)
   return [
     `Title: ${naslov || 'Narodna pjesma'}`,
     `Style: ${style}`,
     '',
     'Lyrics:',
-    tekst,
+    cleanLyrics,
   ].join('\n')
 }
+
+export { stripSectionLabels }
 
 function pickAudioUrl(data) {
   if (!data) return null
@@ -72,11 +89,12 @@ function pickAudioUrl(data) {
 
 async function callGcuiSuno({ baseUrl, tekst, naslov, zanr, vokal, instrumenti }) {
   const endpoint = `${baseUrl.replace(/\/$/, '')}/api/custom_generate`
+  const clean = stripSectionLabels(tekst)
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      prompt: tekst,
+      prompt: clean,
       tags: buildStyleTags({ zanr, vokal, instrumenti }),
       title: naslov || 'Narodna pjesma',
       make_instrumental: false,
@@ -98,12 +116,13 @@ async function callGcuiSuno({ baseUrl, tekst, naslov, zanr, vokal, instrumenti }
 }
 
 async function callCustomMusicApi({ endpoint, tekst, zanr, vokal, instrumenti, naslov }) {
+  const clean = stripSectionLabels(tekst)
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       prompt: buildMusicPrompt({ tekst, zanr, vokal, instrumenti }),
-      lyrics: tekst,
+      lyrics: clean,
       genre: zanr,
       vocal: vokal,
       instruments: instrumenti,
@@ -125,6 +144,7 @@ async function callCustomMusicApi({ endpoint, tekst, zanr, vokal, instrumenti, n
 
 async function callSunoApiOrg({ apiKey, tekst, naslov, zanr, vokal, instrumenti }) {
   const endpoint = 'https://api.sunoapi.org/api/v1/generate'
+  const clean = stripSectionLabels(tekst)
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -135,7 +155,7 @@ async function callSunoApiOrg({ apiKey, tekst, naslov, zanr, vokal, instrumenti 
       customMode: true,
       instrumental: false,
       model: 'V4',
-      prompt: tekst.slice(0, 3000),
+      prompt: clean.slice(0, 3000),
       style: buildStyleTags({ zanr, vokal, instrumenti }).slice(0, 200),
       title: (naslov || 'Narodna pjesma').slice(0, 80),
       callBackUrl: 'https://example.com/callback',

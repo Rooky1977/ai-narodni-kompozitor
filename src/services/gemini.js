@@ -9,11 +9,11 @@ function buildPrompt({ tema, zanr, vokal, instrumenti }) {
   return `Ti si majstor narodnog pjesništva Balkana. Napiši kompletan tekst pjesme na bosanskom/hrvatskom/srpskom jeziku (ijekavica ili ekavica — biraj prirodno).
 
 Tema: ${tema}
-Žanr: ${zanr}
+Žanr / melos: ${zanr}
 Vokal: ${vokal}
 Instrumenti (atmosfera): ${instrumenti || 'harmonika, violina'}
 
-STROGO poštuj ovaj format (naslovi sekcija tačno ovako):
+STROGO poštuj ovaj format (naslovi sekcija tačno ovako — koriste se samo za uređivanje u aplikaciji):
 
 [Intro]
 (2–4 kratka stiha ili atmosfera)
@@ -35,7 +35,8 @@ STROGO poštuj ovaj format (naslovi sekcija tačno ovako):
 
 Pravila:
 - Rimuj prirodno, bez modernog slenga.
-- Ton i rječnik odgovaraju žanru (${zanr}).
+- Ton, rječnik i ritam stiha strogo odgovaraju žanru (${zanr}).
+- Ako je žanr Tamburaški / Narodni melos / Izvorna — piši izvorno, narodski, bez pop fraza.
 - Ne dodaj komentare, objašnjenja ni markdown — samo tekst pjesme.
 - Naslov pjesme stavi u prvi red kao: Naslov: ...`
 }
