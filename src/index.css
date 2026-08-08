@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --studio-bg: #0c0a09;
+  --studio-amber: #f59e0b;
+  --studio-gold: #eab308;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 158, 11, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(194, 65, 12, 0.08), transparent),
+    var(--studio-bg);
+  background-attachment: fixed;
+}
+
+@layer components {
+  .studio-panel {
+    @apply rounded-2xl border border-studio-border/80 bg-studio-panel/90 backdrop-blur-sm;
+  }
+
+  .studio-input {
+    @apply w-full rounded-xl border border-studio-border bg-studio-elevated px-4 py-3
+      text-studio-text placeholder:text-studio-muted/70
+      outline-none transition focus:border-studio-amber/60 focus:ring-2 focus:ring-studio-amber/20;
+  }
+
+  .studio-label {
+    @apply mb-2 block text-sm font-medium tracking-wide text-studio-muted;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r
+      from-studio-amber to-studio-gold px-5 py-3 font-semibold text-stone-950
+      shadow-lg shadow-amber-900/30 transition hover:brightness-110
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-studio-border
+      bg-studio-elevated/60 px-4 py-2.5 text-sm font-medium text-studio-text
+      transition hover:border-studio-amber/40 hover:bg-studio-elevated
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
+
+/* Custom range (progress / volume) */
+input[type='range'].studio-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: #44403c;
+  outline: none;
+}
+
+input[type='range'].studio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--studio-amber);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+}
+
+input[type='range'].studio-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--studio-amber);
+  cursor: pointer;
+}

@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Spark free: otvoreno čitanje/pisanje za demo.
+    // Za produkciju dodaj Firebase Auth i ograniči po userId.
+    match /pjesme/{songId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['naslov', 'tekst', 'audioUrl'])
+        && request.resource.data.naslov is string
+        && request.resource.data.tekst is string
+        && request.resource.data.naslov.size() <= 120
+        && request.resource.data.tekst.size() <= 8000;
+      allow update, delete: if false;
+    }
+  }
+}
