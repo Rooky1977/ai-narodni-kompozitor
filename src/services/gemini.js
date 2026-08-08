@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
-
 const MODEL_CANDIDATES = [
   'gemini-2.5-flash',
   'gemini-flash-latest',
@@ -42,18 +40,41 @@ Pravila:
 - Naslov pjesme stavi u prvi red kao: Naslov: ...`
 }
 
-async function generateWithModel(genAI, modelName, prompt) {
-  const model = genAI.getGenerativeModel({ model: modelName })
-  const result = await model.generateContent(prompt)
-  const text = result?.response?.text?.()
-  if (!text?.trim()) {
-    throw new Error('Gemini je vratio prazan odgovor.')
+async function generateWithRest(apiKey, modelName, prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.9,
+        maxOutputTokens: 2048,
+      },
+    }),
+  })
+
+  const data = await res.json().catch(() => ({}))
+
+  if (!res.ok) {
+    const msg =
+      data?.error?.message ||
+      `Gemini greška ${res.status} na modelu ${modelName}`
+    const err = new Error(msg)
+    err.status = res.status
+    err.model = modelName
+    throw err
+  }
+
+  const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || ''
+  if (!text.trim()) {
+    throw new Error(`Model ${modelName} je vratio prazan odgovor.`)
   }
   return text.trim()
 }
 
 /**
- * Generiše strukturiran tekst pjesme preko Google Gemini Free Tier.
+ * Generiše strukturiran tekst pjesme preko Google Gemini Free Tier (REST).
  */
 export async function generateLyrics(params) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
@@ -63,20 +84,19 @@ export async function generateLyrics(params) {
     )
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey)
   const prompt = buildPrompt(params)
-  let lastError
+  const errors = []
 
   for (const modelName of MODEL_CANDIDATES) {
     try {
-      return await generateWithModel(genAI, modelName, prompt)
+      return await generateWithRest(apiKey, modelName, prompt)
     } catch (err) {
-      lastError = err
+      errors.push(`${modelName}: ${err.message}`)
     }
   }
 
   throw new Error(
-    lastError?.message || 'Neuspješno generisanje teksta. Provjeri Gemini API ključ i kvotu.'
+    `Neuspješno generisanje teksta.\n${errors.join('\n')}\n\nOsvježi stranicu sa Ctrl+F5 ako vidiš staru grešku.`
   )
 }
 

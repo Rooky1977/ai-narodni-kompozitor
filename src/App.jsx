@@ -126,7 +126,7 @@ export default function App() {
             />
 
             {lyricsError && (
-              <p className="rounded-xl border border-red-800/50 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+              <p className="whitespace-pre-wrap rounded-xl border border-red-800/50 bg-red-950/40 px-4 py-3 text-sm text-red-200">
                 {lyricsError}
               </p>
             )}
@@ -163,7 +163,7 @@ export default function App() {
       </main>
 
       <footer className="border-t border-studio-border/50 py-6 text-center text-xs text-studio-muted">
-        AI Narodni Kompozitor · Gemini + Firebase Spark · Spreman za Hosting
+        AI Narodni Kompozitor · Gemini tekst + Suno muzika · v1.1.0
       </footer>
     </div>
   )
